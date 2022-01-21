@@ -71,7 +71,7 @@ void getRandomWord(const vector<vector<string>> dictionary, string& gameword, un
 {
 	unsigned randomWordIndex = 0;
 	unsigned rowNumber = 0;
-	srand(time(0)); //how does it work?
+	srand(time(0)); 
 	if (wordLength == 1)
 		randomWordIndex = rand() % dictionary[0].size();
 	else if (wordLength == 2)
