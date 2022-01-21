@@ -31,7 +31,7 @@ void Settings(unsigned& wordLength, unsigned& numberAttempts)
 	cout << "1. Choose the word's length:" << endl << " 1. 3-5 letters" << endl << " 2. 6-7 letters" << endl << " 3. 8-10 letters" << endl << " 4. Skip this option.";
 	cout << endl << "Enter a number: ";
 	cin >> wordLength;
-	while (wordLength < 1 || wordLength > 4) //napravi dopulnitelna proverka dali e chislo!!!
+	while (wordLength < 1 || wordLength > 4) 
 	{
 		cout << "Invalid input! Try again: ";
 		cin >> wordLength;
