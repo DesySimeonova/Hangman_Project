@@ -6,6 +6,7 @@
 #include <ctime>
 using namespace std;
 const unsigned MAX_WORD_LENGTH = 11;
+const unsigned MAX_NUM_ATTEMPTS = 20;
 
 void Menu(unsigned& chosenOption)
 {
@@ -14,7 +15,7 @@ void Menu(unsigned& chosenOption)
 	cout << "MENU:" << endl;
 	cout << " 1. Start a new game" << endl << " 2. Settings" << endl << " 3. Exit " << endl << "Enter a number: ";
 	cin >> chosenOption;
-	if (chosenOption < 1 || chosenOption>3)
+	while (chosenOption < 1 || chosenOption > 3)
 	{
 		cout << "Invalid input! Try again: ";
 		cin >> chosenOption;
@@ -30,7 +31,7 @@ void Settings(unsigned& wordLength, unsigned& numberAttempts)
 	cout << "1. Choose the word's length:" << endl << " 1. 3-5 letters" << endl << " 2. 6-7 letters" << endl << " 3. 8-10 letters" << endl << " 4. Skip this option.";
 	cout << endl << "Enter a number: ";
 	cin >> wordLength;
-	if (wordLength < 1 || wordLength > 4) //napravi dopulnitelna proverka dali e chislo!!!
+	while (wordLength < 1 || wordLength > 4) //napravi dopulnitelna proverka dali e chislo!!!
 	{
 		cout << "Invalid input! Try again: ";
 		cin >> wordLength;
@@ -46,7 +47,7 @@ void Settings(unsigned& wordLength, unsigned& numberAttempts)
 	{
 		cout << "Enter the number of the attempts: ";
 		cin >> numberAttempts;
-		if (numberAttempts < 1 || numberAttempts > 20)
+		while (numberAttempts < 1 || numberAttempts > 20)
 		{
 			cout << "Invalid input! Try again: ";
 			cin >> numberAttempts;
@@ -56,8 +57,11 @@ void Settings(unsigned& wordLength, unsigned& numberAttempts)
 		numberAttempts = 5;
 	else
 	{
-		cout << "Invalid input! Try again: ";
-		cin >> numberAttempts;
+		while (chosenAttemptsOption != 1 && chosenAttemptsOption != 2)
+		{
+			cout << "Invalid input! Try again: ";
+			cin >> numberAttempts;
+		}
 	}
 
 	SetConsoleTextAttribute(h, 7);
@@ -121,8 +125,7 @@ bool doesItContain(const string gameWord, const char guess, char* hiddenWord)
 	}
 	if (doesItContain)
 		return true;
-	else
-		return false;
+	return false;
 
 }
 
@@ -141,6 +144,17 @@ bool areTheSame(string gameWord, unsigned gameWordLength, char* hiddenWord)
 			return false;
 	}
 	return true;
+}
+
+bool hasBeenUsed(char* checkBuffer, char guess)
+{
+	while (*checkBuffer != '\0')
+	{
+		if (*checkBuffer == guess)
+			return true;
+		checkBuffer++;
+	}
+	return false;
 }
 
 void hangman(const vector<vector<string>> dictionary, unsigned wordLength, unsigned numberAttempts, unsigned& chosenOption)
@@ -164,7 +178,7 @@ void hangman(const vector<vector<string>> dictionary, unsigned wordLength, unsig
 	hideWord(gameWord, hiddenWord);
 	char guess;
 	bool win = true;
-	while (numberAttempts != 0)
+	while (numberAttempts > 0)
 	{
 		cout << "Attempts left: " << numberAttempts << ". Guess the word ";
 		printHiddenWord(hiddenWord);
@@ -176,9 +190,14 @@ void hangman(const vector<vector<string>> dictionary, unsigned wordLength, unsig
 			cout << endl << "Invalid input! Try again: ";
 			cin >> guess;
 		}
-		if (!doesItContain(gameWord, guess, hiddenWord))
+		char checkBuffer[MAX_NUM_ATTEMPTS + 1];
+		checkBuffer[MAX_NUM_ATTEMPTS] = '\0';
+		unsigned i = 0;
+		if (!doesItContain(gameWord, guess, hiddenWord) && !hasBeenUsed(checkBuffer, guess))
 		{
 			numberAttempts--;
+			checkBuffer[i] = guess;
+			i++;
 		}
 		unsigned gameWordLength = gameWord.length();
 		win = true;
@@ -236,6 +255,9 @@ int main()
 
 
 	return 0;
+}
+
+
 }
 
 
